@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Will You Be My Valentine? 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-100: #fff0f3;
+    --pink-200: #ffd6e0;
+    --pink-300: #ffb3c6;
+    --pink-400: #ff8fab;
+    --pink-500: #ff6b8a;
+    --pink-600: #e84670;
+    --pink-700: #c9184a;
+    --rose: #ff3366;
+    --cream: #fff8f0;
+    --warm-white: #fffaf5;
+    --text-dark: #5c2340;
+    --text-light: #8b4d6e;
+    --gold: #d4a574;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--pink-100);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    color: var(--text-dark);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── Floating Hearts Background ── */
+  .hearts-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .floating-heart {
+    position: absolute;
+    opacity: 0.13;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg) scale(1); opacity: 0; }
+    10% { opacity: 0.13; }
+    90% { opacity: 0.13; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(0.5); opacity: 0; }
+  }
+
+  /* ── Sparkle Particles ── */
+  .sparkle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 0.5; transform: scale(1); }
+  }
+
+  /* ── Screens ── */
+  .screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+  }
+
+  /* ═══════════════════════════════════ */
+  /* ── SCREEN 1: The Question ──────── */
+  /* ═══════════════════════════════════ */
+  .question-screen {
+    gap: 24px;
+    padding: 20px;
+  }
+
+  .cute-animal {
+    font-size: 64px;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(255, 107, 138, 0.3));
+    display: flex;
+    gap: 8px;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .question-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 7vw, 56px);
+    font-weight: 700;
+    color: var(--pink-700);
+    text-align: center;
+    line-height: 1.25;
+    text-shadow: 0 2px 10px rgba(201, 24, 74, 0.12);
+  }
+
+  .question-subtitle {
+    font-size: clamp(14px, 3vw, 17px);
+    color: var(--text-light);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* ── Buttons ── */
+  .buttons-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .btn {
+    padding: 15px 44px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  .btn-yes {
+    background: linear-gradient(135deg, var(--pink-500), var(--rose));
+    color: white;
+    box-shadow: 0 6px 24px rgba(255, 51, 102, 0.35);
+  }
+
+  .btn-yes:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 32px rgba(255, 51, 102, 0.45);
+  }
+
+  .btn-yes:active {
+    transform: scale(1.02);
+  }
+
+  .btn-no {
+    background: white;
+    color: var(--pink-600);
+    border: 2px solid var(--pink-300);
+    box-shadow: 0 4px 16px rgba(255, 179, 198, 0.3);
+    position: relative;
+    z-index: 50;
+  }
+
+  /* When the No button escapes, it becomes fixed */
+  .btn-no.escaping {
+    position: fixed !important;
+    z-index: 50;
+  }
+
+  .tease-text {
+    font-size: 14px;
+    color: var(--pink-500);
+    font-weight: 600;
+    min-height: 22px;
+    text-align: center;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tease-text.visible {
+    opacity: 1;
+  }
+
+  /* ── Paw prints decoration ── */
+  .paw-prints {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+    opacity: 0.1;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .paw { font-size: 20px; }
+  .paw:nth-child(odd) { transform: rotate(-15deg); }
+  .paw:nth-child(even) { transform: rotate(15deg) translateY(-6px); }
+
+  /* ═══════════════════════════════════ */
+  /* ── SCREEN 2: Envelope ──────────── */
+  /* ═══════════════════════════════════ */
+  .envelope-screen {
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .envelope-instruction {
+    font-size: clamp(15px, 3.5vw, 20px);
+    color: var(--pink-600);
+    font-weight: 600;
+    text-align: center;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ── Envelope Construction ── */
+  .envelope-wrapper {
+    cursor: pointer;
+    position: relative;
+    width: clamp(260px, 75vw, 380px);
+    height: clamp(180px, 52vw, 260px);
+  }
+
+  .envelope-back {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, #f8bbd0, #f48fb1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(233, 30, 99, 0.2);
+  }
+
+  .envelope-back::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 2px dashed rgba(201, 24, 74, 0.12);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+
+  /* The letter paper inside */
+  .letter-paper {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 12%;
+    top: 22%;
+    background: var(--warm-white);
+    border-radius: 6px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .envelope-wrapper.opened .letter-paper {
+    transform: translateY(-70%);
+    cursor: pointer;
+  }
+
+  /* Front flap (the triangle that covers the top) */
+  .envelope-front-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55%;
+    z-index: 4;
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+
+  .envelope-front-flap svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .envelope-wrapper.opened .envelope-front-flap {
+    transform: rotateX(180deg);
+  }
+
+  /* Bottom fold covers lower part */
+  .envelope-front-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 58%;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .envelope-front-bottom svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Heart seal */
+  .seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    background: var(--rose);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 16px rgba(255, 51, 102, 0.35);
+    z-index: 6;
+    transition: all 0.4s ease;
+  }
+
+  .envelope-wrapper.opened .seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  .envelope-cats {
+    display: flex;
+    gap: 14px;
+    font-size: 40px;
+    margin-top: 6px;
+  }
+
+  .cat-left { animation: peekLeft 3s ease-in-out infinite; }
+  .cat-right { animation: peekRight 3s ease-in-out infinite; }
+
+  @keyframes peekLeft {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    50% { transform: translateX(6px) rotate(5deg); }
+  }
+
+  @keyframes peekRight {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    50% { transform: translateX(-6px) rotate(-5deg); }
+  }
+
+  /* ═══════════════════════════════════ */
+  /* ── SCREEN 3: The Letter ────────── */
+  /* ═══════════════════════════════════ */
+  .letter-screen {
+    gap: 16px;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .letter-card {
+    background: var(--warm-white);
+    border-radius: 16px;
+    padding: clamp(28px, 6vw, 48px);
+    max-width: 500px;
+    width: 92%;
+    box-shadow: 0 12px 48px rgba(201, 24, 74, 0.12), 0 4px 16px rgba(201, 24, 74, 0.06);
+    position: relative;
+    overflow: hidden;
+    animation: letterReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 179, 198, 0.25);
+  }
+
+  @keyframes letterReveal {
+    0% { opacity: 0; transform: translateY(40px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-400), var(--rose), var(--pink-400));
+  }
+
+  .letter-header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .letter-header .emoji-row {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .letter-date {
+    font-size: 11px;
+    color: var(--pink-400);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .letter-greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5vw, 30px);
+    color: var(--pink-700);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .letter-body {
+    font-size: clamp(14px, 3.2vw, 16px);
+    line-height: 1.8;
+    color: var(--text-dark);
+  }
+
+  .letter-body p { margin-bottom: 12px; }
+
+  .letter-signature {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--rose);
+    margin-top: 18px;
+    font-style: italic;
+    text-align: right;
+  }
+
+  .letter-footer-animals {
+    text-align: center;
+    font-size: 32px;
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  /* ── Confetti ── */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -12px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .burst-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  /* ═══════════════════════════════════ */
+  /* ── RESPONSIVE ─────────────────── */
+  /* ═══════════════════════════════════ */
+  @media (max-height: 700px) {
+    .question-screen { gap: 16px; }
+    .cute-animal { font-size: 48px; }
+    .question-title { font-size: clamp(26px, 7vw, 38px); }
+    .btn { padding: 12px 34px; font-size: 15px; }
+    .envelope-wrapper {
+      width: clamp(220px, 70vw, 320px);
+      height: clamp(150px, 48vw, 220px);
+    }
+    .letter-card { padding: clamp(20px, 4vw, 32px); }
+    .envelope-cats { font-size: 32px; }
+  }
+
+  @media (max-width: 380px) {
+    .buttons-row { gap: 14px; }
+    .btn { padding: 12px 28px; font-size: 14px; }
+    .cute-animal { font-size: 44px; }
+  }
+
+  @media (min-width: 1200px) {
+    .question-title { font-size: 60px; }
+    .cute-animal { font-size: 80px; }
+    .btn { padding: 18px 56px; font-size: 19px; }
+    .envelope-wrapper { width: 420px; height: 290px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background Hearts -->
+<div class="hearts-bg" id="heartsBg"></div>
+<div id="sparkles"></div>
+
+<!-- Paw Prints -->
+<div class="paw-prints">
+  <span class="paw">🐾</span><span class="paw">🐾</span><span class="paw">🐾</span><span class="paw">🐾</span><span class="paw">🐾</span>
+</div>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confetti"></div>
+
+<!-- ═══════ SCREEN 1: THE QUESTION ═══════ -->
+<div class="screen question-screen" id="questionScreen">
+  <div class="cute-animal"><span>🐶</span><span>🐱</span></div>
+  <h1 class="question-title">Will You Be<br>My Valentine?</h1>
+  <p class="question-subtitle">Choose wisely… one option might be tricky 😏</p>
+  <div class="buttons-row">
+    <button class="btn btn-yes" id="yesBtn" onclick="sayYes()">Yes! 💕</button>
+    <button class="btn btn-no" id="noBtn">No 😢</button>
+  </div>
+  <p class="tease-text" id="teaseText">&nbsp;</p>
+</div>
+
+<!-- ═══════ SCREEN 2: THE ENVELOPE ═══════ -->
+<div class="screen envelope-screen hidden" id="envelopeScreen">
+  <p class="envelope-instruction" id="envelopeInstruction">✨ Tap the envelope to open it ✨</p>
+  <div class="envelope-wrapper" id="envelopeWrapper" onclick="handleEnvelopeClick()">
+    <div class="envelope-back"></div>
+    <div class="letter-paper" id="letterPaper"><span>A letter just for you… 💌</span></div>
+    <div class="envelope-front-flap">
+      <svg viewBox="0 0 400 160" preserveAspectRatio="none">
+        <polygon points="0,0 200,148 400,0" fill="#f48fb1"/>
+      </svg>
+    </div>
+    <div class="envelope-front-bottom">
+      <svg viewBox="0 0 400 220" preserveAspectRatio="none">
+        <polygon points="0,0 200,120 400,0 400,220 0,220" fill="#fce4ec"/>
+        <line x1="0" y1="0" x2="200" y2="120" stroke="rgba(201,24,74,0.06)" stroke-width="1"/>
+        <line x1="200" y1="120" x2="400" y2="0" stroke="rgba(201,24,74,0.06)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="seal" id="seal">💌</div>
+  </div>
+  <div class="envelope-cats">
+    <span class="cat-left">🐱</span>
+    <span class="cat-right">🐶</span>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 3: THE LETTER ═══════ -->
+<div class="screen letter-screen hidden" id="letterScreen">
+  <div class="letter-card">
+    <div class="letter-header">
+      <div class="emoji-row">💕🌹💕</div>
+      <span class="letter-date">Valentine's Day 2026</span>
+    </div>
+    <p class="letter-greeting">My Bubsi Alba,</p>
+    <div class="letter-body">
+      <p>From the very first moment I saw you, my heart knew something extraordinary had arrived. You bring warmth to my coldest days and light to my darkest nights.</p>
+      <p>Every smile of yours is a little sunrise, every laugh a melody I never want to end. You make the ordinary feel magical, and I'm so grateful that of all the people in this world, I get to love you.</p>
+      <p>So here's my promise: I'll be the one who always makes you laugh, always holds your hand, and never lets you click "No." 😉🐾</p>
+    </div>
+    <div class="letter-signature">Forever Yours ❤️</div>
+    <div class="letter-footer-animals">
+      <span>🐶</span><span>💕</span><span>🐱</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Background hearts ──
+  const heartEmojis = ['💕','💗','💖','🩷','❤️','💘','🐾','✨'];
+  const hc = document.getElementById('heartsBg');
+  for (let i = 0; i < 20; i++) {
+    const h = document.createElement('span');
+    h.className = 'floating-heart';
+    h.textContent = heartEmojis[~~(Math.random()*heartEmojis.length)];
+    h.style.left = Math.random()*100+'%';
+    h.style.fontSize = (14+Math.random()*20)+'px';
+    h.style.animationDuration = (8+Math.random()*14)+'s';
+    h.style.animationDelay = (Math.random()*10)+'s';
+    hc.appendChild(h);
+  }
+
+  // ── Sparkles ──
+  const sc = document.getElementById('sparkles');
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = Math.random()*100+'%';
+    s.style.top = Math.random()*100+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    s.style.animationDuration = (1.5+Math.random()*2)+'s';
+    sc.appendChild(s);
+  }
+
+  // ═══════════════════════════════════
+  // ── No button escape ──────────────
+  // ═══════════════════════════════════
+  const noBtn = document.getElementById('noBtn');
+  const teaseText = document.getElementById('teaseText');
+  const teaseMessages = [
+    "Haha, nice try! 😜",
+    "You can't catch me! 🏃‍♂️",
+    "Nope, not happening! 🙈",
+    "Are you sure about that? 🤔",
+    "The button says NO to your no! 😤",
+    "Keep trying… or just click Yes 😏",
+    "I'm too fast for you! ⚡",
+    "Even the cats agree: click Yes! 🐱",
+    "The dog begs you to click Yes! 🐶",
+    "C'mon, you know you want to! 💕"
+  ];
+  let teaseIndex = 0, escaped = false;
+
+  function escapeButton(e) {
+    if (e) e.preventDefault();
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
+    if (!escaped) { escaped = true; noBtn.classList.add('escaping'); }
+    const pad = 12;
+    noBtn.style.left = (pad + Math.random()*(vw-bw-pad*2)) + 'px';
+    noBtn.style.top = (pad + Math.random()*(vh-bh-pad*2)) + 'px';
+    teaseText.textContent = teaseMessages[teaseIndex % teaseMessages.length];
+    teaseText.classList.add('visible');
+    teaseIndex++;
+  }
+
+  noBtn.addEventListener('mouseenter', escapeButton);
+  noBtn.addEventListener('touchstart', escapeButton, {passive:false});
+  noBtn.addEventListener('click', escapeButton);
+
+  // ═══════════════════════════════════
+  // ── Yes → Envelope ────────────────
+  // ═══════════════════════════════════
+  function sayYes() {
+    burstHearts();
+    noBtn.classList.remove('escaping');
+    noBtn.style.left = ''; noBtn.style.top = '';
+    escaped = false;
+    document.getElementById('questionScreen').classList.add('hidden');
+    setTimeout(() => document.getElementById('envelopeScreen').classList.remove('hidden'), 400);
+  }
+
+  function burstHearts() {
+    const hearts = ['💕','💗','💖','❤️','💘','🩷'];
+    const cx = window.innerWidth/2, cy = window.innerHeight/2;
+    for (let i = 0; i < 14; i++) {
+      const h = document.createElement('span');
+      h.className = 'burst-heart';
+      h.textContent = hearts[~~(Math.random()*hearts.length)];
+      h.style.left = cx+'px'; h.style.top = cy+'px';
+      h.style.fontSize = (18+Math.random()*18)+'px';
+      const a = (i/14)*Math.PI*2, d = 80+Math.random()*180;
+      const tx = Math.cos(a)*d, ty = Math.sin(a)*d;
+      h.animate([
+        {transform:'translate(-50%,-50%) scale(0)',opacity:1},
+        {transform:`translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(1.3)`,opacity:0}
+      ],{duration:1000, easing:'cubic-bezier(0.25,0.46,0.45,0.94)'});
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),1100);
+    }
+  }
+
+  // ═══════════════════════════════════
+  // ── Envelope logic ────────────────
+  // ═══════════════════════════════════
+  let envelopeState = 0;
+
+  function handleEnvelopeClick() {
+    const w = document.getElementById('envelopeWrapper');
+    const inst = document.getElementById('envelopeInstruction');
+    if (envelopeState === 0) {
+      w.classList.add('opened');
+      envelopeState = 1;
+      inst.textContent = '✨ Now tap the letter to read it ✨';
+    } else if (envelopeState === 1) {
+      showConfetti();
+      document.getElementById('envelopeScreen').classList.add('hidden');
+      setTimeout(() => document.getElementById('letterScreen').classList.remove('hidden'), 400);
+      envelopeState = 2;
+    }
+  }
+
+  function showConfetti() {
+    const c = document.getElementById('confetti');
+    const colors = ['#ff6b8a','#ff3366','#ffb3c6','#ffd6e0','#d4a574','#ff8fab','#e84670'];
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random()*100+'%';
+      p.style.background = colors[~~(Math.random()*colors.length)];
+      const s = 6+Math.random()*7;
+      p.style.width = s+'px'; p.style.height = s+'px';
+      p.style.borderRadius = Math.random()>0.5?'50%':'2px';
+      p.style.animationDuration = (2+Math.random()*3)+'s';
+      p.style.animationDelay = (Math.random()*1.2)+'s';
+      c.appendChild(p);
+      setTimeout(()=>p.remove(),5500);
+    }
+  }
+</script>
+</body>
+</html>
